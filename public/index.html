@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alchemy Assist</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 3h8v2h-1v7l7 12a3 3 0 0 1-2.6 4.5H8.6A3 3 0 0 1 6 24l7-12V5h-1z' fill='%23c9a85c'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=Cinzel:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-smoke" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="brand">
+      <svg class="brand-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M12 3h8v2h-1v7l7 12a3 3 0 0 1-2.6 4.5H8.6A3 3 0 0 1 6 24l7-12V5h-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 21h13l2 3.4a1 1 0 0 1-.9 1.6H8.4a1 1 0 0 1-.9-1.6z" fill="currentColor" opacity=".55"/></svg>
+      <div>
+        <h1>Alchemy Assist</h1>
+        <p class="tagline">Turn your satchel into septims</p>
+      </div>
+    </div>
+    <div class="summary" id="summary"></div>
+  </header>
+
+  <main class="layout">
+    <!-- LEFT: uploads + inventory -->
+    <section class="panel side">
+      <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload screenshots">
+        <input type="file" id="fileInput" accept="image/*" multiple hidden />
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4.5 4.5M12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="dz-title">Drop inventory screenshots</div>
+        <div class="dz-sub">or click to choose · paste with <kbd>⌘V</kbd> · add more any time</div>
+      </div>
+      <div id="uploads" class="uploads"></div>
+      <div id="ocrNote" class="ocr-note" hidden></div>
+
+      <div class="panel-head">
+        <h2>Satchel <span class="muted" id="invCount"></span></h2>
+        <form id="addForm" class="add-form" autocomplete="off">
+          <input id="addName" list="allIngredients" placeholder="Add ingredient…" aria-label="Ingredient name" />
+          <input id="addCount" type="number" min="1" value="1" aria-label="Count" />
+          <button type="submit" class="btn small" aria-label="Add">+</button>
+          <datalist id="allIngredients"></datalist>
+        </form>
+      </div>
+      <p class="hint">Click a count to fix it · <span class="lock-glyph">🔒</span> keeps an ingredient out of the plan</p>
+      <ul id="inventory" class="inventory"></ul>
+    </section>
+
+    <!-- RIGHT: settings + plan -->
+    <section class="panel main">
+      <details class="settings" id="settingsBox">
+        <summary>
+          <span>Character</span>
+          <span class="settings-brief" id="settingsBrief"></span>
+        </summary>
+        <div class="settings-grid">
+          <label class="field wide">
+            <span>Alchemy skill <b id="skillOut">15</b></span>
+            <input type="range" id="skill" min="15" max="100" step="1" value="15" />
+          </label>
+          <label class="field">
+            <span>Fortify Alchemy %</span>
+            <input type="number" id="fortify" min="0" max="500" step="1" value="0" />
+          </label>
+          <label class="field">
+            <span>Alchemist perk</span>
+            <select id="alchemist">
+              <option value="0">None</option><option value="1">Rank 1 (+20%)</option><option value="2">Rank 2 (+40%)</option>
+              <option value="3">Rank 3 (+60%)</option><option value="4">Rank 4 (+80%)</option><option value="5">Rank 5 (+100%)</option>
+            </select>
+          </label>
+          <div class="toggles">
+            <label class="tog"><input type="checkbox" id="physician" /><span>Physician</span></label>
+            <label class="tog"><input type="checkbox" id="benefactor" /><span>Benefactor</span></label>
+            <label class="tog"><input type="checkbox" id="poisoner" /><span>Poisoner</span></label>
+            <label class="tog"><input type="checkbox" id="purity" /><span>Purity</span></label>
+            <label class="tog"><input type="checkbox" id="seeker" /><span>Seeker of Shadows</span></label>
+            <label class="tog"><input type="checkbox" id="allowPoisons" checked /><span>Brew poisons</span></label>
+          </div>
+        </div>
+      </details>
+
+      <div class="panel-head plan-head">
+        <h2>Brewing order</h2>
+        <span class="muted small" id="planMeta"></span>
+      </div>
+      <ol id="plan" class="plan"></ol>
+      <div id="planEmpty" class="empty">
+        <div class="empty-flask" aria-hidden="true"></div>
+        <p>Upload a screenshot of your ingredients to see what to brew.</p>
+      </div>
+
+      <details class="crafted" id="craftedBox">
+        <summary>Brewed <span class="muted" id="craftedCount"></span></summary>
+        <ul id="crafted" class="crafted-list"></ul>
+      </details>
+    </section>
+  </main>
+
+  <footer class="bottom">
+    <button class="btn ghost" id="clearBtn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Clear ingredients &amp; start fresh
+    </button>
+    <button class="btn danger" id="shutdownBtn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8m6.4-4.4a8 8 0 1 1-12.8 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Shut down server
+    </button>
+  </footer>
+
+  <dialog id="confirm" class="modal">
+    <form method="dialog">
+      <h3 id="confirmTitle"></h3>
+      <p id="confirmText"></p>
+      <div class="modal-actions">
+        <button value="cancel" class="btn ghost">Cancel</button>
+        <button value="ok" class="btn" id="confirmOk">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="offline" class="offline" hidden>
+    <div>
+      <h2>Server stopped</h2>
+      <p>You can close this tab. Launch <code>Start Alchemy Assist.command</code> to start again.</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="alchemy.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
