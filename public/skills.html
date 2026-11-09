@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skill Training · Skyrim Assist</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 3h8v2h-1v7l7 12a3 3 0 0 1-2.6 4.5H8.6A3 3 0 0 1 6 24l7-12V5h-1z' fill='%23c9a85c'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=Cinzel:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-smoke" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="brand">
+      <svg class="brand-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M12 3h8v2h-1v7l7 12a3 3 0 0 1-2.6 4.5H8.6A3 3 0 0 1 6 24l7-12V5h-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 21h13l2 3.4a1 1 0 0 1-.9 1.6H8.4a1 1 0 0 1-.9-1.6z" fill="currentColor" opacity=".55"/></svg>
+      <div>
+        <h1>Skyrim Assist</h1>
+        <p class="tagline">From 15 to legendary, the fast way</p>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="Pages">
+      <a href="./">Alchemy</a>
+      <a href="skills.html" aria-current="page">Skill Training</a>
+    </nav>
+    <div class="summary"></div>
+  </header>
+
+  <main class="skills-page">
+    <div class="section-title">
+      <h2>Before you grind</h2>
+      <p>Bonuses that speed up every method below. They stack by multiplying.</p>
+    </div>
+    <div class="meta-grid" id="meta"></div>
+
+    <div class="section-title">
+      <h2>Skills</h2>
+      <p>Click a skill to see ways to train it, from plain play to outright glitches.</p>
+    </div>
+    <div class="toolbar">
+      <input class="search" id="search" type="search" placeholder="Search skills or methods…" aria-label="Search skills or methods" />
+      <div class="chips" id="groupChips" role="group" aria-label="Skill group"></div>
+      <div class="chips" id="tierChips" role="group" aria-label="Method type"></div>
+      <button class="link-btn" id="toggleAll">Expand all</button>
+    </div>
+    <ul class="skills" id="skills"></ul>
+    <div class="no-results" id="noResults" hidden>No skills match that search.</div>
+
+    <p class="page-foot">Compiled from the <a href="https://en.uesp.net/wiki/Skyrim:Skills" target="_blank" rel="noopener">UESP wiki</a> (CC BY-SA 2.5) and long-standing community tips. "Patched" notes refer to the Unofficial Skyrim Special Edition Patch.</p>
+  </main>
+
+  <script src="skills.js"></script>
+</body>
+</html>
